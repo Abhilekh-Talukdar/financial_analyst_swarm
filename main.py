@@ -1,4 +1,5 @@
 import os
+import argparse
 from dotenv import load_dotenv
 from core.graph import build_graph
 from langfuse.callback import CallbackHandler
@@ -6,16 +7,29 @@ from langfuse.callback import CallbackHandler
 load_dotenv()
 
 def main():
+    parser = argparse.ArgumentParser(description="Run the Financial Analyst Swarm.")
+    parser.add_argument(
+        "query", 
+        nargs="?", 
+        default="Analyze Apple's (AAPL) current market position based on news and financials.",
+        help="The research query for the swarm."
+    )
+    args = parser.parse_args()
+
     # Check if API keys are set up
-    if not os.getenv("OPENAI_API_KEY") or not os.getenv("LANGFUSE_SECRET_KEY"):
-        print("Please configure your .env file with OPENAI_API_KEY and Langfuse keys!")
+    required_keys = ["OPENAI_API_KEY", "LANGFUSE_SECRET_KEY", "LANGFUSE_PUBLIC_KEY", "TAVILY_API_KEY"]
+    missing_keys = [key for key in required_keys if not os.getenv(key)]
+    
+    if missing_keys:
+        print(f"Missing required environment variables: {', '.join(missing_keys)}")
+        print("Please configure them in your .env file!")
         return
 
     # Setup Langfuse Callback
     langfuse_handler = CallbackHandler()
     
     graph = build_graph()
-    query = "Analyze Apple's (AAPL) current market position based on news and financials."
+    query = args.query
     
     print(f"User Query: {query}\n")
     print("--- Execution Started ---")
