@@ -37,7 +37,11 @@ class ParseTaskPlanTests(unittest.TestCase):
             {"task_id": "news", "task_type": "news", "ticker": "AAPL", "extra": "ignored"},
             {"task_id": "quant", "task_type": "quant", "ticker": "AAPL", "notes": "ignored"},
         ]
-        self.assertEqual(parse_task_plan(json.dumps(plan)), VALID_PLAN)
+        expected = [
+            {"task_id": "news", "task_type": "news", "ticker": "AAPL"},
+            {"task_id": "quant", "task_type": "quant", "ticker": "AAPL"},
+        ]
+        self.assertEqual(parse_task_plan(json.dumps(plan)), expected)
 
     def test_rejects_empty_or_non_text_response(self):
         for content in ("", "   ", None):
