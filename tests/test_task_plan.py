@@ -15,7 +15,8 @@ class ParseTaskPlanTests(unittest.TestCase):
         self.assertEqual(parse_task_plan(json.dumps(VALID_PLAN)), VALID_PLAN)
 
     def test_parses_markdown_fence_and_preamble(self):
-        content = f"Here is the plan:\n\`\`\`json\n{json.dumps(VALID_PLAN)}\n\`\`\`"
+        fence = chr(96) * 3
+        content = f"Here is the plan:\n{fence}json\n{json.dumps(VALID_PLAN)}\n{fence}"
         self.assertEqual(parse_task_plan(content), VALID_PLAN)
 
     def test_normalizes_task_type_and_ticker(self):
